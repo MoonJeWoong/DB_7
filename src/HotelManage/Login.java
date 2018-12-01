@@ -1,5 +1,7 @@
 package HotelManage;
 
+import com.sun.org.apache.xml.internal.security.Init;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
@@ -11,9 +13,7 @@ import static javax.swing.GroupLayout.Alignment.*;
 
 public class Login extends JFrame implements ActionListener{
     private JFrame frame = new JFrame("LOGIN");
-    private JPanel upPanel = new JPanel();
     private JPanel mainPanel = new JPanel();
-    private JPanel downPanel = new JPanel();
     private JPanel panel = new JPanel();
     private JLabel idLabel = new JLabel("ID", JLabel.CENTER);
     private JLabel pwdLabel = new JLabel("PASSWORD", JLabel.CENTER);
@@ -24,7 +24,20 @@ public class Login extends JFrame implements ActionListener{
     public Login(){
         prepareGUI();
     }
-
+    // private checkLogin(){
+    //      if status == manager{
+//                return 0
+//                all button activate}
+//            if status == staff{
+//                return 1;
+//                only room & booking button activate;}
+//            if status == housekeeper{
+//                return 2;
+//                only room - room button activate;}
+//            if status == account {
+//                return 3;
+//                only account button activate;}
+//    }
     private void prepareGUI(){
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setSize(500, 180);
@@ -90,6 +103,11 @@ public class Login extends JFrame implements ActionListener{
         if (e.getSource() == loginButton){
             System.out.println("initial Monitor");
             // checking employees' table and accept or deny login try
+                // if accept,
+            new InitialMonitor();
+//            frame.setVisible(false);
+                // if denied,
+                    // show denied alert.
         }
     }
     public static void main(String[] args){
