@@ -95,8 +95,10 @@ public class InitialMonitor implements ActionListener {
 
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == basicmanageButton){
-            //new window for basic management monitor
             frame.setVisible(false);
+            new Hotel();
+            //new window for basic management monitor
+//            frame.setVisible(false);
         }
         if(e.getSource() == accountButton){
             //new window for account manage monitor
