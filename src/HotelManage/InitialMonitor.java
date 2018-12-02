@@ -28,11 +28,11 @@ public class InitialMonitor implements ActionListener {
 
     private void prepareGUI(){
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        frame.setSize(500, 500);
-        mainPanel.setSize(500,500);
+        frame.setSize(350, 170);
+        mainPanel.setSize(350 ,170);
 
         frame.setLocationRelativeTo(null);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+//        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         hotel.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -44,8 +44,8 @@ public class InitialMonitor implements ActionListener {
         roomButton.addActionListener(this);
         customerButton.addActionListener(this);
 
-        mainPanel.setLayout(null);
-        panel.setBounds(dim.width/2 - 145, dim.height/2-90, 500, 500);
+        mainPanel.setLayout(new FlowLayout());
+//        panel.setBounds(dim.width/2 - 145, dim.height/2-90, 500, 500);
         mainPanel.add(panel);
 
         frame.add(mainPanel);
