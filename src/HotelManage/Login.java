@@ -44,12 +44,12 @@ public class Login extends JFrame implements ActionListener{
 //      아래코드와 같은 역할을 함.
 //      frame.setLocation((dim.width/2) - (frame.getWidth()/2), (dim.height/2) - (frame.getHeight()/2));
         frame.setLocationRelativeTo(null);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+//        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         loginButton.addActionListener(this);
 
-        mainPanel.setLayout(null);
-        panel.setBounds(dim.width/2-175, dim.height/2-90, 350, 100);
+        mainPanel.setLayout(new FlowLayout());
+//        panel.setBounds(dim.width/2-175, dim.height/2-90, 350, 100);
 //        mainPanel.setLayout(new FlowLayout());
         mainPanel.add(panel);
 
@@ -103,7 +103,7 @@ public class Login extends JFrame implements ActionListener{
             // checking employees' table and accept or deny login try
                 // if accept,
             new InitialMonitor();
-//            frame.setVisible(false);
+            frame.setVisible(false);
                 // if denied,
                     // show denied alert.
         }
