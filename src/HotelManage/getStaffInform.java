@@ -1,5 +1,7 @@
 package HotelManage;
 
+import javafx.stage.Window;
+
 import javax.swing.*;
 
 public class getStaffInform {
@@ -28,7 +30,7 @@ public class getStaffInform {
     private void prepareGUI(){
         frame.setSize(400, 600);
         frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
         positionInput.addItem("Manager");
         positionInput.addItem("Staff");
