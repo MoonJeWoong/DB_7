@@ -1,34 +1,44 @@
 package HotelManage;
 
-import javafx.stage.Window;
-
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class getStaffInform {
+public class getStaffInform implements ActionListener {
     private JFrame frame = new JFrame("직원정보");
+    private JPanel mainPanel = new JPanel();
     private JLabel name = new JLabel("이름");
     private JLabel sex = new JLabel("성별");
+    private JLabel sexF = new JLabel("여");
+    private JLabel sexM = new JLabel("남");
+    private JLabel registrationNo = new JLabel("주민번호");
+    private JLabel bar = new JLabel("ㅡ");
     private JLabel email = new JLabel("이메일");
     private JLabel address = new JLabel("주소");
     private JLabel phone = new JLabel("번호");
     private JLabel position = new JLabel("직급");
+    private JLabel salary = new JLabel("연봉");
+    private JButton registerButton = new JButton("등록");
 
     private JTextField nameInput = new JTextField();
-    private JRadioButton sexInputF = new JRadioButton("여");
-    private JRadioButton sexInputM = new JRadioButton("남");
+    private JRadioButton sexInputF = new JRadioButton("여", false);
+    private JRadioButton sexInputM = new JRadioButton("남", false);
+    private ButtonGroup sexGroup = new ButtonGroup();
+    private JTextField registrationBirth = new JTextField(6);
+    private JTextField registrationOnly = new JTextField(7);
     private JTextField emailInput = new JTextField();
     private JTextField addressInput = new JTextField();
     private JTextField phoneInput = new JTextField();
     private JComboBox<String> positionInput = new JComboBox<String>();
+    private JTextField salaryInput = new JTextField();
 
 
     public getStaffInform(){
         prepareGUI();
-        showWindow();
     }
 
     private void prepareGUI(){
-        frame.setSize(400, 600);
+        frame.setSize(300, 450);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -37,10 +47,70 @@ public class getStaffInform {
         positionInput.addItem("Housekeeper");
         positionInput.addItem("Accountant");
 
+        mainPanel.setLayout(null);
+        name.setBounds(40, 20, 70, 30);
+        registrationNo.setBounds(40, 60, 70, 30);
+        sex.setBounds(40, 100, 70, 30 );
+        email.setBounds(40, 140, 70, 30);
+        address.setBounds(40, 180, 70, 30);
+        phone.setBounds(40, 220, 70, 30);
+        position.setBounds(40, 260, 70, 30);
+        salary.setBounds(40, 300, 70, 30);
+
+        nameInput.setBounds(100, 20, 130, 30);
+        registrationBirth.setBounds(100, 60, 50, 30);
+        bar.setBounds(150, 60, 20, 30);
+        registrationOnly.setBounds(165, 60, 65, 30);
+        sexInputF.setBounds(100, 100, 20, 30);
+        sexF.setBounds(125, 100, 20, 30);
+        sexInputM.setBounds(145, 100, 20, 30);
+        sexM.setBounds(170, 100, 20, 30);
+        sexGroup.add(sexInputF);
+        sexGroup.add(sexInputM);
+        emailInput.setBounds(100, 140, 130, 30);
+        addressInput.setBounds(100, 180, 130, 30);
+        phoneInput.setBounds(100, 220, 130, 30);
+        positionInput.setBounds(100, 260, 130, 30);
+        salaryInput.setBounds(100, 300, 130, 30);
+
+        registerButton.setBounds(160, 340, 70, 30);
+
+        mainPanel.add(name);
+        mainPanel.add(registrationNo);
+        mainPanel.add(sex);
+        mainPanel.add(email);
+        mainPanel.add(address);
+        mainPanel.add(phone);
+        mainPanel.add(position);
+        mainPanel.add(salary);
+
+        mainPanel.add(nameInput);
+        mainPanel.add(registrationBirth);
+        mainPanel.add(bar);
+        mainPanel.add(registrationOnly);
+        mainPanel.add(sexInputF);
+        mainPanel.add(sexF);
+        mainPanel.add(sexInputM);
+        mainPanel.add(sexM);
+        mainPanel.add(emailInput);
+        mainPanel.add(addressInput);
+        mainPanel.add(phoneInput);
+        mainPanel.add(positionInput);
+        mainPanel.add(salaryInput);
+
+        mainPanel.add(registerButton);
+
+        registerButton.addActionListener(this);
+
+        frame.add(mainPanel);
         frame.setVisible(true);
     }
 
-    private void showWindow(){
-
+    public void actionPerformed(ActionEvent e){
+        if(e.getSource()==registerButton){
+            // insert the staff's information into staff's table
+            // insert into Staff values(staffID, name, registerNo, sex, phone, address, email, position, salary);
+             frame.dispose();
+        }
     }
 }
