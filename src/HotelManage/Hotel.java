@@ -140,6 +140,7 @@ public class Hotel implements ActionListener{
         panel.add(scrollPane, gbc[3]);
 
         hireButton.addActionListener(this);
+        deleteButton.addActionListener(this);
 
         return panel;
     }
@@ -159,6 +160,7 @@ public class Hotel implements ActionListener{
             new getStaffInform();
         }
         if(e.getSource() == deleteButton){
+            new deleteStaffInform();
             // delete the selected Staff's information
         }
     }
