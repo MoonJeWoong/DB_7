@@ -29,7 +29,7 @@ public class getStaffInform implements ActionListener {
     private JTextField emailInput = new JTextField();
     private JTextField addressInput = new JTextField();
     private JTextField phoneInput = new JTextField();
-    private JComboBox<String> positionInput = new JComboBox<String>();
+    private JComboBox<String> positionInput = new JComboBox<>();
     private JTextField salaryInput = new JTextField();
 
 
