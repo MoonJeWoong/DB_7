@@ -109,6 +109,7 @@ public class Login extends JFrame implements ActionListener{
         }
     }
     public static void main(String[] args){
+        new DB_Connect();
         Login login = new Login();
         login.showLoginPanel();
     }
