@@ -19,9 +19,11 @@ public class InitialMonitor implements ActionListener {
     private JButton bookingButton = new JButton("예약관리");
     private JButton roomButton = new JButton("객실관리");
     private JButton customerButton = new JButton("회원관리");
+    private String position;
 
 
-    public InitialMonitor(){
+    public InitialMonitor(String StaffPosition){
+        this.position = StaffPosition;
         prepareGUI();
         showInitial();
     }
@@ -94,27 +96,88 @@ public class InitialMonitor implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e){
+//        if(position == "Manager"){
+//            if(e.getSource() == basicmanageButton){
+//                new Hotel();
+//                //new window for basic management monitor
+//            }
+//            if(e.getSource() == accountButton){
+//                new Hotel();
+//                //new window for account manage monitor
+//            }
+//            if(e.getSource() == bookingButton){
+//                new Hotel();
+//                //new window for booking manage monitor
+//            }
+//            if(e.getSource() == roomButton){
+//                new Hotel();
+//                //new window for room manage monitor
+//            }
+//            if (e.getSource() == customerButton) {
+//                new Hotel();
+//                //new window for customer manage monitor
+//            }
+//        }
+//        if(position == "Staff"){
+//            if(e.getSource() == bookingButton){
+//                new Hotel();
+//                //new window for booking manage monitor
+//            }
+//            if(e.getSource() == roomButton){
+//                new Hotel();
+//                //new window for room manage monitor
+//            }
+//            if (e.getSource() == customerButton) {
+//                new Hotel();
+//                //new window for customer manage monitor
+//            }
+//        }
+//        if(position == "Housekeeper"){
+//            if(e.getSource() == roomButton){
+//                new Hotel();
+//                //new window for room manage monitor
+//            }
+//        }
+//        if(position == "Accountant"){
+//            if(e.getSource() == accountButton){
+//                new Hotel();
+//                // new window for room manage monitor
+//            }
+//        }
         if(e.getSource() == basicmanageButton){
-            frame.setVisible(false);
-            new Hotel();
+            if(position.equals("Manager")){ new Hotel(); }
+            if(position.equals("Staff")){ System.out.println("staff deny");}
+            if(position.equals("Housekeeper")){System.out.println("housekeeper deny"); }
+            if(position.equals("Accountant")){System.out.println("accountant deny"); }
             //new window for basic management monitor
-//            frame.setVisible(false);
         }
         if(e.getSource() == accountButton){
+            if(position.equals("Manager")){System.out.println("account - manager");}
+            if(position.equals("Staff")){System.out.println("staff deny");}
+            if(position.equals("Housekeeper")){System.out.println("housekeeper deny");}
+            if(position.equals("Accountant")){System.out.println("account - accountant");}
             //new window for account manage monitor
-            frame.setVisible(false);
         }
         if(e.getSource() == bookingButton){
+            if(position.equals("Manager")){System.out.println("booking - manager");}
+            if(position.equals("Staff")){System.out.println("booking - staff");}
+            if(position.equals("Housekeeper")){System.out.println("housekeeper deny");}
+            if(position.equals("Accountant")){System.out.println("accountant deny");}
             //new window for booking manage monitor
-            frame.setVisible(false);
         }
         if(e.getSource() == roomButton){
+            if(position.equals("Manager")){System.out.println("room - manager");}
+            if(position.equals("Staff")){System.out.println("room - staff");}
+            if(position.equals("Housekeeper")){ System.out.println("room - housekeeper");}
+            if(position.equals("Accountant")){System.out.println("accountant deny");}
             //new window for room manage monitor
-            frame.setVisible(false);
         }
         if (e.getSource() == customerButton) {
+            if(position.equals("Manager")){System.out.println("customer - manager");}
+            if(position.equals("Staff")){System.out.println("customer - staff");}
+            if(position.equals("Housekeeper")){System.out.println("housekeeper deny");}
+            if(position.equals("Accountant")){System.out.println("accountant deny"); }
             //new window for customer manage monitor
-            frame.setVisible(false);
         }
     }
 
