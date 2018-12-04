@@ -6,8 +6,10 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import static javax.swing.GroupLayout.Alignment.*;
+import java.sql.*;
 
+import static javax.swing.GroupLayout.Alignment.BASELINE;
+import static javax.swing.GroupLayout.Alignment.LEADING;
 
 public class Login extends JFrame implements ActionListener{
     private JFrame frame = new JFrame("LOGIN");
@@ -18,24 +20,14 @@ public class Login extends JFrame implements ActionListener{
     private JTextField idInput = new JTextField();
     private JPasswordField pwdInput = new JPasswordField();
     private JButton loginButton = new JButton("LOGIN");
+    private static Connection dbTest;
+    private Integer username;
+    private String password;
 
     public Login(){
         prepareGUI();
     }
-    // private checkLogin(){
-    //      if status == manager{
-//                return 0
-//                all button activate}
-//            if status == staff{
-//                return 1;
-//                only room & booking button activate;}
-//            if status == housekeeper{
-//                return 2;
-//                only room - room button activate;}
-//            if status == account {
-//                return 3;
-//                only account button activate;}
-//    }
+
     private void prepareGUI(){
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setSize(500, 180);
@@ -66,11 +58,11 @@ public class Login extends JFrame implements ActionListener{
         layout.setAutoCreateContainerGaps(true);
 
         layout.setHorizontalGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(LEADING)
                     .addComponent(idLabel)
                     .addComponent(pwdLabel)
                 )
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(LEADING)
                     .addComponent(idInput)
                     .addComponent(pwdInput)
                 )
@@ -87,7 +79,6 @@ public class Login extends JFrame implements ActionListener{
         );
 
         panel.setLayout(layout);
-        System.out.println(panel.getWidth() +", " +panel.getHeight());
         TitledBorder title;
         Border blackline = BorderFactory.createLineBorder(Color.BLACK, 1, true);
         title = BorderFactory.createTitledBorder(blackline, "LOGIN");
@@ -97,20 +88,87 @@ public class Login extends JFrame implements ActionListener{
 
     }
 
+    public void loginCheck(Integer username, String password) throws SQLException {
+        String jquery = "select StaffID from Staff where StaffID="+username;
+        PreparedStatement stmt = dbTest.prepareStatement(jquery);
+        ResultSet rs = stmt.executeQuery();
+        Integer idCheck = null;
+        if(rs.next()) {
+            idCheck = rs.getInt("StaffID");
+        }
+
+        jquery = "select DPassword from Staff where DPassword = '"+password+"'";
+        stmt = dbTest.prepareStatement(jquery);
+        rs = stmt.executeQuery();
+        String pwdCheck = null;
+        if(rs.next()) {
+            pwdCheck = rs.getString("DPassword");
+        }
+
+        if((username.equals(idCheck)) && (password.equals(pwdCheck))){
+            jquery = "select DPosition from Staff where StaffID = "+username;
+            stmt = dbTest.prepareStatement(jquery);
+            rs = stmt.executeQuery();
+            String position = null;
+            if(rs.next()) {
+                position = rs.getString("DPosition");
+            }
+            System.out.println(position);
+            frame.setVisible(false);
+            new InitialMonitor(position);
+        }else{
+            new DeniedMessage();
+        }
+        rs.close();
+        stmt.close();
+//        if(rs.getString("DPosition") == "Manager"){
+//            new InitialMonitor();
+//        }
+//        if(rs.getString("DPosition") == "Staff"){
+//            new InitialMonitor_S();
+//        }
+//        if(rs.getString("DPosition") == "Housekeeper"){
+//            new InitialMonitor_H();
+//        }
+//        if(rs.getString("DPosition") == "Accountant"){
+//            new
+//        }
+    }
     public void actionPerformed(ActionEvent e){
         if (e.getSource() == loginButton){
-            System.out.println("initial Monitor");
-            // checking employees' table and accept or deny login try
-                // if accept,
-            new InitialMonitor();
-            frame.setVisible(false);
-                // if denied,
-                    // show denied alert.
+            username = Integer.parseInt(idInput.getText());
+            password = new String(pwdInput.getPassword());
+            //checking employees' table and accpet or deny login try
+            try{
+                //if accepted,
+                loginCheck(username, password);
+            } catch(SQLException se){
+                //if denied,
+                //show denied alert.
+                new DeniedMessage();
+                se.printStackTrace();
+            }
+        }
+    }
+
+    public static void connectDB(){
+        try {
+            Class.forName("oracle.jdbc.OracleDriver");
+            dbTest = DriverManager.getConnection("jdbc:oracle:thin:" + "@localhost:1521:XE", "database", "database");
+            System.out.println("데이터베이스에 연결 되었습니다.");
+
+        } catch (SQLException e){
+            e.printStackTrace();
+            System.out.println("Connection Failed");
+            System.out.println("SQLException: " + e);
+        } catch (Exception e){
+            System.out.println("Exception: "+e);
         }
     }
     public static void main(String[] args){
-        new DB_Connect();
         Login login = new Login();
         login.showLoginPanel();
+        connectDB();
+
     }
 }
