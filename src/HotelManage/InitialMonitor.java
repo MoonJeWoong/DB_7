@@ -96,54 +96,6 @@ public class InitialMonitor implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e){
-//        if(position == "Manager"){
-//            if(e.getSource() == basicmanageButton){
-//                new Hotel();
-//                //new window for basic management monitor
-//            }
-//            if(e.getSource() == accountButton){
-//                new Hotel();
-//                //new window for account manage monitor
-//            }
-//            if(e.getSource() == bookingButton){
-//                new Hotel();
-//                //new window for booking manage monitor
-//            }
-//            if(e.getSource() == roomButton){
-//                new Hotel();
-//                //new window for room manage monitor
-//            }
-//            if (e.getSource() == customerButton) {
-//                new Hotel();
-//                //new window for customer manage monitor
-//            }
-//        }
-//        if(position == "Staff"){
-//            if(e.getSource() == bookingButton){
-//                new Hotel();
-//                //new window for booking manage monitor
-//            }
-//            if(e.getSource() == roomButton){
-//                new Hotel();
-//                //new window for room manage monitor
-//            }
-//            if (e.getSource() == customerButton) {
-//                new Hotel();
-//                //new window for customer manage monitor
-//            }
-//        }
-//        if(position == "Housekeeper"){
-//            if(e.getSource() == roomButton){
-//                new Hotel();
-//                //new window for room manage monitor
-//            }
-//        }
-//        if(position == "Accountant"){
-//            if(e.getSource() == accountButton){
-//                new Hotel();
-//                // new window for room manage monitor
-//            }
-//        }
         if(e.getSource() == basicmanageButton){
             if(position.equals("Manager")){ new Hotel(); }
             if(position.equals("Staff")){ System.out.println("staff deny");}
@@ -159,8 +111,8 @@ public class InitialMonitor implements ActionListener {
             //new window for account manage monitor
         }
         if(e.getSource() == bookingButton){
-            if(position.equals("Manager")){System.out.println("booking - manager");}
-            if(position.equals("Staff")){System.out.println("booking - staff");}
+            if(position.equals("Manager")){new Room_Reserve_Info();}
+            if(position.equals("Staff")){new Room_Reserve_Info();}
             if(position.equals("Housekeeper")){System.out.println("housekeeper deny");}
             if(position.equals("Accountant")){System.out.println("accountant deny");}
             //new window for booking manage monitor
@@ -173,8 +125,8 @@ public class InitialMonitor implements ActionListener {
             //new window for room manage monitor
         }
         if (e.getSource() == customerButton) {
-            if(position.equals("Manager")){System.out.println("customer - manager");}
-            if(position.equals("Staff")){System.out.println("customer - staff");}
+            if(position.equals("Manager")){new Customer_List();}
+            if(position.equals("Staff")){new Customer_List();}
             if(position.equals("Housekeeper")){System.out.println("housekeeper deny");}
             if(position.equals("Accountant")){System.out.println("accountant deny"); }
             //new window for customer manage monitor
