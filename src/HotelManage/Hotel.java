@@ -12,19 +12,18 @@ public class Hotel implements ActionListener{
     private JFrame frame = new JFrame("HOTEL");
     private JButton hireButton = new JButton("New");
     private JButton deleteButton = new JButton("Delete");
+    private JButton editButton = new JButton("Edit");
     private Image img = null;
 
     public Hotel(){
         prepareGUI();
-        showHotelManage();
-
     }
 
     private void prepareGUI(){
-        frame.setSize(1920, 1080);
+        frame.setSize(800, 540);
         frame.setLocationRelativeTo(null);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         try{
             File sourceimage = new File("C:\\Users\\kimjiwoo\\OneDrive\\문서\\PROGRAMMING\\2학년\\2_데이터베이스\\DBPBL\\src\\HotelManage\\the-palm-962785_1920_1.png");
             img = ImageIO.read(sourceimage);
@@ -45,17 +44,17 @@ public class Hotel implements ActionListener{
 
     private JPanel HotelInform(){
         JPanel panel = new JPanel();
-        GridBagConstraints[] gbc = new GridBagConstraints[5];
+        GridBagConstraints[] gbc = new GridBagConstraints[6];
         panel.setLayout(new GridBagLayout());
 
-        for(int i=0;i<5;i++){
+        for(int i=0;i<6;i++){
             gbc[i] = new GridBagConstraints();
             gbc[i].gridx = 0;
             gbc[i].gridy = i;
+            gbc[i].gridwidth = 2;
         }
 
         JLabel image = new JLabel(new ImageIcon(img));
-//        image.setBounds(640,360,640,360);
 
         String name = " Atlantis the Palm, Dubai";
         JLabel Hname = new JLabel(name);
@@ -73,17 +72,16 @@ public class Hotel implements ActionListener{
         String FaxNum = fax + fno;
         JLabel faxNo = new JLabel(FaxNum);
 
-//        image.setBounds(640,100,640,360);
-//        Hname.setBounds(700,500,300,100);
-//        Haddress.setBounds(700, 610, 300, 100);
-//        telNo.setBounds(700,720,300,100);
-//        faxNo.setBounds(700,830,300,100);
-//
+        gbc[5].gridx = 1;
+        gbc[5].gridwidth = 1;
+        editButton.addActionListener(this);
+
         panel.add(image, gbc[0]);
         panel.add(Hname, gbc[1]);
         panel.add(Haddress, gbc[2]);
         panel.add(telNo, gbc[3]);
         panel.add(faxNo, gbc[4]);
+        panel.add(editButton, gbc[5]);
 
         return panel;
 
@@ -109,19 +107,19 @@ public class Hotel implements ActionListener{
 
         hireButton.setHorizontalAlignment(0);
         hireButton.setVerticalAlignment(0);
+        //hire button
         gbc[1].insets = new Insets(5, 0, 5,2);
         gbc[1].weightx = 0.0;
         gbc[1].weighty = 0.0;
         gbc[1].gridx = 1;
         gbc[1].gridy = 0;
-
-
+        //delete button
         gbc[2].insets = new Insets(5, 0, 5,25);
         gbc[2].weightx = 0.0;
         gbc[2].weighty = 0.0;
         gbc[2].gridx = 2;
         gbc[2].gridy = 0;
-
+        //staff list
         JTextArea staffInform = new JTextArea();
         JScrollPane scrollPane = new JScrollPane(staffInform);
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -147,13 +145,108 @@ public class Hotel implements ActionListener{
 
     private JPanel HotelFacInform(){
         JPanel panel = new JPanel();
+        GridBagConstraints[] gbc = new GridBagConstraints[6];
+        panel.setLayout(new GridBagLayout());
 
+        for(int i=0;i<6;i++){
+            gbc[i] = new GridBagConstraints();
+        }
+
+        JLabel facManage = new JLabel("1. 부대시설 관리");
+        gbc[0].insets = new Insets(10, 20, 10, 0);
+        gbc[0].gridx = 0;
+        gbc[0].gridy = 0;
+        gbc[0].weightx = 0.0;
+        gbc[0].weighty = 0.0;
+        panel.add(facManage, gbc[0]);
+
+        JComboBox<String> HfacMng = new JComboBox<>();
+        HfacMng.addItem("주차장");
+        HfacMng.addItem("수영장");
+        HfacMng.addItem("식당");
+        HfacMng.addItem("헬스장");
+        HfacMng.addItem("스키장");
+        gbc[1].insets = new Insets(10, 10, 10, 20);
+        gbc[1].gridx = 1;
+        gbc[1].gridy = 0;
+        gbc[0].weightx = 0.0;
+        gbc[0].weighty = 0.0;
+        panel.add(HfacMng, gbc[1]);
+
+        JTextArea facInformation = new JTextArea();
+        JScrollPane facInfoScroll = new JScrollPane(facInformation);
+        facInfoScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        facInfoScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        gbc[2].insets = new Insets(10, 20, 5, 20);
+        gbc[2].gridx = 0;
+        gbc[2].gridy = 1;
+        gbc[2].gridwidth=3;
+        gbc[2].weightx = 1.0;
+        gbc[2].weighty = 0.7;
+        gbc[2].fill = GridBagConstraints.BOTH;
+        panel.add(facInfoScroll, gbc[2]);
+
+        JLabel roomInfo = new JLabel("2. 객실정보");
+        gbc[3].insets = new Insets(10, 10, 10, 0);
+        gbc[3].gridx = 0;
+        gbc[3].gridy = 2;
+        gbc[3].weightx = 0.0;
+        gbc[3].weighty = 0.0;
+        panel.add(roomInfo, gbc[3]);
+
+        JPanel infoLabel = new JPanel();
+        GridBagConstraints[] gbcinfo = new GridBagConstraints[11];
+        infoLabel.setLayout(new GridBagLayout());
+        for(int i=0;i<11;i++){
+            gbcinfo[i] = new GridBagConstraints();
+            gbcinfo[i].gridx = 0;
+            gbcinfo[i].gridy = i;
+        }
+        JLabel roomInfoString1 = new JLabel("◈ 객실 총 갯수 : 100개");
+        roomInfoString1.setHorizontalTextPosition(SwingConstants.LEFT);
+        JLabel roomInfoString2 = new JLabel("-방 종류");
+        roomInfoString2.setHorizontalTextPosition(SwingConstants.LEFT);
+//        gbcinfo[1].gridx = 1;
+
+        JLabel roomInfoString2_std = new JLabel("STANDARD ROOM : 40");
+        JLabel roomInfoString2_dlx = new JLabel("DELUXE ROOM : 30");
+        JLabel roomInfoString2_st = new JLabel("SUITE ROOM : 30");
+//        for(int i=2;i<5;i++){
+//            gbcinfo[i].gridx = 2;
+//        }
+
+        JLabel roomInfoString3 = new JLabel("-침대 수");
+//        gbcinfo[5].gridx = 1;
+
+        JLabel roomInfoString3_db = new JLabel("DOUBLE ROOM : 50", SwingConstants.LEFT);
+        JLabel roomInfoString3_tw = new JLabel("TWIN ROOM : 30", SwingConstants.LEFT);
+        JLabel roomInfoString3_tp = new JLabel("TRIPLE ROOM : 10", SwingConstants.LEFT);
+        JLabel roomInfoString3_fm = new JLabel("FAMILY ROOM : 7", SwingConstants.LEFT);
+        JLabel roomInfoString3_cn = new JLabel("Connecting ROOM : 3", SwingConstants.LEFT);
+//        for(int i=6;i<11;i++){
+//            gbcinfo[i].gridx = 2;
+//        }
+        infoLabel.add(roomInfoString1, gbcinfo[0]);
+        infoLabel.add(roomInfoString2, gbcinfo[1]);
+        infoLabel.add(roomInfoString2_std, gbcinfo[2]);
+        infoLabel.add(roomInfoString2_dlx, gbcinfo[3]);
+        infoLabel.add(roomInfoString2_st, gbcinfo[4]);
+        infoLabel.add(roomInfoString3, gbcinfo[5]);
+        infoLabel.add(roomInfoString3_db, gbcinfo[6]);
+        infoLabel.add(roomInfoString3_tw, gbcinfo[7]);
+        infoLabel.add(roomInfoString3_tp, gbcinfo[8]);
+        infoLabel.add(roomInfoString3_fm, gbcinfo[9]);
+        infoLabel.add(roomInfoString3_cn, gbcinfo[10]);
+
+        gbc[4].insets = new Insets(0, 10, 10, 0);
+        gbc[4].gridx = 0;
+        gbc[4].gridy = 3;
+        gbc[4].weightx = 1.0;
+        gbc[4].weighty = 0.3;
+        panel.add(infoLabel, gbc[4]);
         return panel;
     }
 
-    private void showHotelManage(){
-
-    }
 
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == hireButton){
@@ -162,6 +255,9 @@ public class Hotel implements ActionListener{
         if(e.getSource() == deleteButton){
             new deleteStaffInform();
             // delete the selected Staff's information
+        }
+        if(e.getSource() == editButton){
+            // can edit hotel's information
         }
     }
 }
