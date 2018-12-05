@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
 
 public class Hotel implements ActionListener{
     private JFrame frame = new JFrame("HOTEL");
@@ -14,8 +15,10 @@ public class Hotel implements ActionListener{
     private JButton deleteButton = new JButton("Delete");
     private JButton editButton = new JButton("Edit");
     private Image img = null;
+    private Connection dbTestHotel;
 
-    public Hotel(){
+    public Hotel(Connection dbTest){
+        this.dbTestHotel = dbTest;
         prepareGUI();
     }
 
@@ -250,10 +253,10 @@ public class Hotel implements ActionListener{
 
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == hireButton){
-            new getStaffInform();
+            new getStaffInform(dbTestHotel);
         }
         if(e.getSource() == deleteButton){
-            new deleteStaffInform();
+            new deleteStaffInform(dbTestHotel);
             // delete the selected Staff's information
         }
         if(e.getSource() == editButton){
