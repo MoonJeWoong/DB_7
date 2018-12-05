@@ -115,7 +115,7 @@ public class Login extends JFrame implements ActionListener{
             }
             System.out.println(position);
             frame.setVisible(false);
-            new InitialMonitor(position);
+            new InitialMonitor(position, dbTest);
         }else{
             new DeniedMessage();
         }
