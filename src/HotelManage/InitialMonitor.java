@@ -6,6 +6,7 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
 
 public class InitialMonitor implements ActionListener {
     private JFrame frame = new JFrame("MANAGE");
@@ -20,10 +21,11 @@ public class InitialMonitor implements ActionListener {
     private JButton roomButton = new JButton("객실관리");
     private JButton customerButton = new JButton("회원관리");
     private String position;
+    private Connection dbTest;
 
-
-    public InitialMonitor(String StaffPosition){
+    public InitialMonitor(String StaffPosition, Connection dbTest){
         this.position = StaffPosition;
+        this.dbTest = dbTest;
         prepareGUI();
         showInitial();
     }
@@ -97,7 +99,7 @@ public class InitialMonitor implements ActionListener {
 
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == basicmanageButton){
-            if(position.equals("Manager")){ new Hotel(); }
+            if(position.equals("Manager")){ new Hotel(dbTest); }
             if(position.equals("Staff")){ System.out.println("staff deny");}
             if(position.equals("Housekeeper")){System.out.println("housekeeper deny"); }
             if(position.equals("Accountant")){System.out.println("accountant deny"); }
