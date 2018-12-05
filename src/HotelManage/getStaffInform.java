@@ -3,6 +3,7 @@ package HotelManage;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.*;
 
 public class getStaffInform implements ActionListener {
     private JFrame frame = new JFrame("직원정보");
@@ -15,6 +16,7 @@ public class getStaffInform implements ActionListener {
     private JLabel bar = new JLabel("ㅡ");
     private JLabel email = new JLabel("이메일");
     private JLabel address = new JLabel("주소");
+    private JLabel postCode = new JLabel("우편번호");
     private JLabel phone = new JLabel("번호");
     private JLabel position = new JLabel("직급");
     private JLabel salary = new JLabel("연봉");
@@ -24,21 +26,24 @@ public class getStaffInform implements ActionListener {
     private JRadioButton sexInputF = new JRadioButton("여", false);
     private JRadioButton sexInputM = new JRadioButton("남", false);
     private ButtonGroup sexGroup = new ButtonGroup();
-    private JTextField registrationBirth = new JTextField(6);
-    private JTextField registrationOnly = new JTextField(7);
+    private JTextField registrationBirth = new JTextField();
+    private JTextField registrationOnly = new JTextField();
     private JTextField emailInput = new JTextField();
     private JTextField addressInput = new JTextField();
+    private JTextField postCodeInput = new JTextField();
     private JTextField phoneInput = new JTextField();
     private JComboBox<String> positionInput = new JComboBox<>();
     private JTextField salaryInput = new JTextField();
+    private Integer StaffOrder;
+    private Connection dbTest;
 
-
-    public getStaffInform(){
+    public getStaffInform(Connection dbTest){
+        this.dbTest = dbTest;
         prepareGUI();
     }
 
     private void prepareGUI(){
-        frame.setSize(300, 450);
+        frame.setSize(300, 500);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -53,9 +58,10 @@ public class getStaffInform implements ActionListener {
         sex.setBounds(40, 100, 70, 30 );
         email.setBounds(40, 140, 70, 30);
         address.setBounds(40, 180, 70, 30);
-        phone.setBounds(40, 220, 70, 30);
-        position.setBounds(40, 260, 70, 30);
-        salary.setBounds(40, 300, 70, 30);
+        postCode.setBounds(40, 220, 70, 30);
+        phone.setBounds(40, 260, 70, 30);
+        position.setBounds(40, 300, 70, 30);
+        salary.setBounds(40, 340, 70, 30);
 
         nameInput.setBounds(100, 20, 130, 30);
         registrationBirth.setBounds(100, 60, 50, 30);
@@ -69,17 +75,19 @@ public class getStaffInform implements ActionListener {
         sexGroup.add(sexInputM);
         emailInput.setBounds(100, 140, 130, 30);
         addressInput.setBounds(100, 180, 130, 30);
-        phoneInput.setBounds(100, 220, 130, 30);
-        positionInput.setBounds(100, 260, 130, 30);
-        salaryInput.setBounds(100, 300, 130, 30);
+        postCodeInput.setBounds(100, 220, 130, 30);
+        phoneInput.setBounds(100, 260, 130, 30);
+        positionInput.setBounds(100, 300, 130, 30);
+        salaryInput.setBounds(100, 340, 130, 30);
 
-        registerButton.setBounds(160, 340, 70, 30);
+        registerButton.setBounds(160, 380, 70, 30);
 
         mainPanel.add(name);
         mainPanel.add(registrationNo);
         mainPanel.add(sex);
         mainPanel.add(email);
         mainPanel.add(address);
+        mainPanel.add(postCode);
         mainPanel.add(phone);
         mainPanel.add(position);
         mainPanel.add(salary);
@@ -94,6 +102,7 @@ public class getStaffInform implements ActionListener {
         mainPanel.add(sexM);
         mainPanel.add(emailInput);
         mainPanel.add(addressInput);
+        mainPanel.add(postCodeInput);
         mainPanel.add(phoneInput);
         mainPanel.add(positionInput);
         mainPanel.add(salaryInput);
@@ -108,9 +117,27 @@ public class getStaffInform implements ActionListener {
 
     public void actionPerformed(ActionEvent e){
         if(e.getSource()==registerButton){
-            // insert the staff's information into staff's table
-            // insert into Staff values(staffID, name, registerNo, sex, phone, address, email, position, salary);
-             frame.dispose();
+            try {
+                String jquery = "select count(*) as rs from Staff";
+                PreparedStatement stmt = dbTest.prepareStatement(jquery);
+                ResultSet rs = stmt.executeQuery();
+
+                rs.next();
+                StaffOrder = rs.getInt("rs");
+
+                Integer staffID = Integer.parseInt(registrationBirth.getText())*1000+StaffOrder;
+                jquery = "INSERT INTO Staff VALUES("+staffID+", '"+nameInput.getText()+"', '"+
+                        addressInput.getText()+"', "+postCodeInput.getText()+", '"+phoneInput.getText()+"', '"+emailInput.getText()+"', '0000', "+
+                        salaryInput.getText()+""+", '"+positionInput.getSelectedItem()+"', 0, null)";
+                stmt = dbTest.prepareStatement(jquery);
+                rs = stmt.executeQuery();
+
+                rs.close();
+                stmt.close();
+                frame.dispose();
+            } catch(SQLException se){
+                se.printStackTrace();
+            }
         }
     }
 }
