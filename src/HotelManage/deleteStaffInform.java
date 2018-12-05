@@ -3,6 +3,10 @@ package HotelManage;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class deleteStaffInform implements ActionListener {
     private JFrame frame = new JFrame("직원정보 삭제");
@@ -10,8 +14,10 @@ public class deleteStaffInform implements ActionListener {
     private JLabel staffID = new JLabel("직원 ID");
     private JTextField staffIDInput = new JTextField();
     private JButton deleteButton = new JButton("삭제");
+    private Connection dbTest;
 
-    public deleteStaffInform(){
+    public deleteStaffInform(Connection dbTest){
+        this.dbTest = dbTest;
         prepareGUI();
     }
 
@@ -37,8 +43,18 @@ public class deleteStaffInform implements ActionListener {
 
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == deleteButton){
-            // delete staff's inform
-            frame.dispose();
+            try{
+                String delquery = "delete from Staff where StaffId = "+staffIDInput.getText();
+                PreparedStatement stmt = dbTest.prepareStatement(delquery);
+                ResultSet rs = stmt.executeQuery();
+
+                frame.dispose();
+
+                rs.close();
+                stmt.close();
+            } catch (SQLException se){
+                se.printStackTrace();
+            }
         }
     }
 }
