@@ -2,20 +2,26 @@ package HotelManage;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class Hotel implements ActionListener{
     private JFrame frame = new JFrame("HOTEL");
     private JButton hireButton = new JButton("New");
     private JButton deleteButton = new JButton("Delete");
     private JButton editButton = new JButton("Edit");
+    public static JTable staffInform;
     private Image img = null;
     private Connection dbTestHotel;
+    public static DefaultTableModel defaultTableModel;
 
     public Hotel(Connection dbTest){
         this.dbTestHotel = dbTest;
@@ -90,6 +96,35 @@ public class Hotel implements ActionListener{
 
     }
 
+    private void initshowStaffli() throws SQLException {
+        Object header[] = {"Staff ID", "Name", "Address", "Phone No", "Email", "Salary", "Position"};
+        Object contents[][] = {};
+        defaultTableModel= new DefaultTableModel(contents, header);
+        staffInform = new JTable(defaultTableModel){
+            public boolean isCellEditable(int rowIndex, int colIndex){
+                return false;
+            }
+        };
+        String staffQuery = "select * from Staff";
+        PreparedStatement staffStmt = dbTestHotel.prepareStatement(staffQuery);
+        ResultSet staffrs = staffStmt.executeQuery();
+
+        while(staffrs.next()){
+            Integer staffid = staffrs.getInt("StaffID");
+            String name = staffrs.getString("DName");
+            String address = staffrs.getString("Address");
+            String phone = staffrs.getString("PhoneNo");
+            String email = staffrs.getString("EmailAddress");
+            Integer salary = staffrs.getInt("Salary");
+            String position = staffrs.getString("DPosition");
+
+            Object data[] = {staffid, name, address, phone, email, salary, position};
+            defaultTableModel.addRow(data);
+        }
+        staffrs.close();
+        staffStmt.close();
+    }
+
     private JPanel StaffInform(){
         JPanel panel = new JPanel();
         GridBagConstraints[] gbc = new GridBagConstraints[4];
@@ -123,7 +158,13 @@ public class Hotel implements ActionListener{
         gbc[2].gridx = 2;
         gbc[2].gridy = 0;
         //staff list
-        JTextArea staffInform = new JTextArea();
+
+        try {
+            initshowStaffli();
+        } catch(SQLException e){
+            e.printStackTrace();
+        }
+//        staffInform.isCellEditable(false);
         JScrollPane scrollPane = new JScrollPane(staffInform);
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -134,6 +175,7 @@ public class Hotel implements ActionListener{
         gbc[3].gridy = 1;
         gbc[3].gridwidth = 3;
         gbc[3].fill = GridBagConstraints.BOTH;
+
 
         panel.add(staffInfoLabel, gbc[0]);
         panel.add(hireButton, gbc[1]);
@@ -250,14 +292,27 @@ public class Hotel implements ActionListener{
         return panel;
     }
 
-
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == hireButton){
             new getStaffInform(dbTestHotel);
+
         }
-        if(e.getSource() == deleteButton){
-            new deleteStaffInform(dbTestHotel);
-            // delete the selected Staff's information
+        int row = staffInform.getSelectedRow();
+        if(row!=-1){
+            if(e.getSource() == deleteButton){
+                try{
+                    Object staffID = staffInform.getValueAt(row, 0);
+                    String delquery = "delete from Staff where StaffId = "+staffID;
+                    PreparedStatement stmt = dbTestHotel.prepareStatement(delquery);
+                    ResultSet rs = stmt.executeQuery();
+
+                    defaultTableModel.removeRow(row);
+
+                    new deleteStaffInform();
+                } catch(SQLException se){
+                    se.printStackTrace();
+                }
+            }
         }
         if(e.getSource() == editButton){
             // can edit hotel's information
