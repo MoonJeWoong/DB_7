@@ -1,9 +1,13 @@
 package HotelManage;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
+
+import static HotelManage.Hotel.defaultTableModel;
+import static HotelManage.Hotel.staffInform;
 
 public class getStaffInform implements ActionListener {
     private JFrame frame = new JFrame("직원정보");
@@ -34,7 +38,6 @@ public class getStaffInform implements ActionListener {
     private JTextField phoneInput = new JTextField();
     private JComboBox<String> positionInput = new JComboBox<>();
     private JTextField salaryInput = new JTextField();
-    private Integer StaffOrder;
     private Connection dbTest;
 
     public getStaffInform(Connection dbTest){
@@ -118,19 +121,44 @@ public class getStaffInform implements ActionListener {
     public void actionPerformed(ActionEvent e){
         if(e.getSource()==registerButton){
             try {
-                String jquery = "select count(*) as rs from Staff";
+//                Integer StaffOrder;
+//                String jquery = "select count(*) as rs from Staff";
+//                PreparedStatement stmt = dbTest.prepareStatement(jquery);
+//                ResultSet rs = stmt.executeQuery();
+//
+//                rs.next();
+//                StaffOrder = rs.getInt("rs");
+
+                String jquery = "(select StaffId from Staff) minus (select StaffId from Staff where rownum < (select count(*) as rs from Staff))";
                 PreparedStatement stmt = dbTest.prepareStatement(jquery);
                 ResultSet rs = stmt.executeQuery();
 
                 rs.next();
-                StaffOrder = rs.getInt("rs");
+                Integer number = rs.getInt("StaffId") % 1000 + 1;
 
-                Integer staffID = Integer.parseInt(registrationBirth.getText())*1000+StaffOrder;
+                System.out.println(number);
+
+               Integer staffID = Integer.parseInt(registrationBirth.getText())*1000+number;
                 jquery = "INSERT INTO Staff VALUES("+staffID+", '"+nameInput.getText()+"', '"+
                         addressInput.getText()+"', "+postCodeInput.getText()+", '"+phoneInput.getText()+"', '"+emailInput.getText()+"', '0000', "+
                         salaryInput.getText()+""+", '"+positionInput.getSelectedItem()+"', 0, null)";
                 stmt = dbTest.prepareStatement(jquery);
                 rs = stmt.executeQuery();
+
+                rs = stmt.executeQuery("(select * from Staff) minus (select * from Staff where rownum < (select count(*) from Staff))");
+                while(rs.next()){
+                    Integer staffid = staffID;
+                    String name = rs.getString("DName");
+                    String address = rs.getString("Address");
+                    String phone = rs.getString("PhoneNo");
+                    String email = rs.getString("EmailAddress");
+                    Integer salary = rs.getInt("Salary");
+                    String position = rs.getString("DPosition");
+
+                    Object data[] = {staffid, name, address, phone, email, salary, position};
+                    defaultTableModel.addRow(data);
+                }
+                defaultTableModel.fireTableDataChanged();
 
                 rs.close();
                 stmt.close();
