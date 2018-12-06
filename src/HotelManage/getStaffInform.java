@@ -7,8 +7,6 @@ import java.awt.event.ActionListener;
 import java.sql.*;
 
 import static HotelManage.Hotel.defaultTableModel;
-import static HotelManage.Hotel.staffInform;
-
 public class getStaffInform implements ActionListener {
     private JFrame frame = new JFrame("직원정보");
     private JPanel mainPanel = new JPanel();
