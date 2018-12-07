@@ -148,12 +148,13 @@ public class getStaffInform implements ActionListener {
                     Integer staffid = staffID;
                     String name = rs.getString("DName");
                     String address = rs.getString("Address");
+                    String postcode = rs.getString("PostCode");
                     String phone = rs.getString("PhoneNo");
                     String email = rs.getString("EmailAddress");
                     Integer salary = rs.getInt("Salary");
                     String position = rs.getString("DPosition");
 
-                    Object data[] = {staffid, name, address, phone, email, salary, position};
+                    Object data[] = {staffid, name, address, postcode, phone, email, salary, position};
                     defaultTableModel.addRow(data);
                 }
                 defaultTableModel.fireTableDataChanged();
