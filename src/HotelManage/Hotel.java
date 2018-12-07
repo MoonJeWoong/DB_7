@@ -17,6 +17,7 @@ public class Hotel implements ActionListener{
     private JFrame frame = new JFrame("HOTEL");
     private JButton hireButton = new JButton("New");
     private JButton deleteButton = new JButton("Delete");
+    private JButton modifyButton = new JButton("Modify");
     private JButton insertButton = new JButton("New");
     private JButton changeButton = new JButton("Revise");
     public static JTable staffInform;
@@ -113,7 +114,7 @@ public class Hotel implements ActionListener{
     }
 
     private void initShowStaff() throws SQLException {
-        Object header[] = {"Staff ID", "Name", "Address", "Phone No", "Email", "Salary", "Position"};
+        Object header[] = {"Staff ID", "Name", "Address", "Postcode", "Phone No", "Email", "Salary", "Position"};
         Object contents[][] = {};
         defaultTableModel= new DefaultTableModel(contents, header);
         staffInform = new JTable(defaultTableModel){
@@ -129,12 +130,13 @@ public class Hotel implements ActionListener{
             Integer staffid = staffrs.getInt("StaffID");
             String name = staffrs.getString("DName");
             String address = staffrs.getString("Address");
+            String postcode = staffrs.getString("PostCode");
             String phone = staffrs.getString("PhoneNo");
             String email = staffrs.getString("EmailAddress");
             Integer salary = staffrs.getInt("Salary");
             String position = staffrs.getString("DPosition");
 
-            Object data[] = {staffid, name, address, phone, email, salary, position};
+            Object data[] = {staffid, name, address, postcode, phone, email, salary, position};
             defaultTableModel.addRow(data);
         }
         staffrs.close();
@@ -143,10 +145,10 @@ public class Hotel implements ActionListener{
 
     private JPanel StaffInform(){
         JPanel panel = new JPanel();
-        GridBagConstraints[] gbc = new GridBagConstraints[4];
+        GridBagConstraints[] gbc = new GridBagConstraints[5];
         panel.setLayout(new GridBagLayout());
 
-        for(int i=0;i<4;i++){
+        for(int i=0;i<5;i++){
             gbc[i] = new GridBagConstraints();
         }
         JLabel staffInfoLabel = new JLabel("직원 목록");
@@ -171,10 +173,15 @@ public class Hotel implements ActionListener{
         gbc[2].insets = new Insets(5, 0, 5,25);
         gbc[2].weightx = 0.0;
         gbc[2].weighty = 0.0;
-        gbc[2].gridx = 2;
+        gbc[2].gridx = 3;
         gbc[2].gridy = 0;
+        //modify button
+        gbc[4].insets = new Insets(5, 0, 5, 2);
+        gbc[4].weighty = 0.0;
+        gbc[4].weightx = 0.0;
+        gbc[4].gridx = 2;
+        gbc[4].gridy = 0;
         //staff list
-
         try {
             initShowStaff();
         } catch(SQLException e) {
@@ -188,7 +195,7 @@ public class Hotel implements ActionListener{
         gbc[3].weighty = 1.0;
         gbc[3].gridx = 0;
         gbc[3].gridy = 1;
-        gbc[3].gridwidth = 3;
+        gbc[3].gridwidth = 4;
         gbc[3].fill = GridBagConstraints.BOTH;
 
 
@@ -196,9 +203,11 @@ public class Hotel implements ActionListener{
         panel.add(hireButton, gbc[1]);
         panel.add(deleteButton, gbc[2]);
         panel.add(scrollPane, gbc[3]);
+        panel.add(modifyButton, gbc[4]);
 
         hireButton.addActionListener(this);
         deleteButton.addActionListener(this);
+        modifyButton.addActionListener(this);
 
         return panel;
     }
@@ -463,6 +472,10 @@ public class Hotel implements ActionListener{
                     se.printStackTrace();
                 }
             }
+            if(e.getSource() == modifyButton){
+                System.out.println(row);
+                new modifyStaffInform(dbTestHotel, row);
+            }
         }
 
         //Hotel Facility
@@ -536,20 +549,18 @@ public class Hotel implements ActionListener{
                 PreparedStatement facstmt;
                 ResultSet facrs;
                 try {
-                    if (e.getSource() == reviseButton) {
-                        String newFacName = FacNameInput.getText();
-                        String newPrice = priceInput.getText();
-                        facQuery = "update HotelFacility set HotelFacName = '" + newFacName + "', HotelFacPrice = " + newPrice + " where HotelFacID = '" + FacId + "'";
-                        facstmt = dbTestHotel.prepareStatement(facQuery);
-                        facrs = facstmt.executeQuery();
+                    String newFacName = FacNameInput.getText();
+                    String newPrice = priceInput.getText();
+                    facQuery = "update HotelFacility set HotelFacName = '" + newFacName + "', HotelFacPrice = " + newPrice + " where HotelFacID = '" + FacId + "'";
+                    facstmt = dbTestHotel.prepareStatement(facQuery);
+                    facrs = facstmt.executeQuery();
 
-                        defaultmodel.setValueAt(newFacName, facrow, 1);
-                        defaultmodel.setValueAt(newPrice, facrow, 2);
-                        defaultmodel.fireTableDataChanged();
-                        facrs.close();
-                        facstmt.close();
-                        rvsFrame.dispose();
-                    }
+                    defaultmodel.setValueAt(newFacName, facrow, 1);
+                    defaultmodel.setValueAt(newPrice, facrow, 2);
+                    defaultmodel.fireTableDataChanged();
+                    facrs.close();
+                    facstmt.close();
+                    rvsFrame.dispose();
                 } catch (SQLException se) {
                     se.printStackTrace();
                 }
