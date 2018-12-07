@@ -17,11 +17,22 @@ public class Hotel implements ActionListener{
     private JFrame frame = new JFrame("HOTEL");
     private JButton hireButton = new JButton("New");
     private JButton deleteButton = new JButton("Delete");
-    private JButton editButton = new JButton("Edit");
+    private JButton insertButton = new JButton("New");
+    private JButton changeButton = new JButton("Revise");
     public static JTable staffInform;
     private Image img = null;
     private Connection dbTestHotel;
     public static DefaultTableModel defaultTableModel;
+    private DefaultTableModel defaultmodel;
+    private JTable facInformation;
+    private JTextField FacNameInput = new JTextField();
+    private JTextField priceInput = new JTextField();
+    private JLabel FacName = new JLabel("시설 이름");
+    private JLabel price = new JLabel("가격");
+    private JButton acceptButton = new JButton("확인");
+    private JButton reviseButton = new JButton("수정");
+    private JFrame insrtFrame = new JFrame("시설 정보");
+    private JFrame rvsFrame = new JFrame("정보 수정");
 
     public Hotel(Connection dbTest){
         this.dbTestHotel = dbTest;
@@ -53,10 +64,10 @@ public class Hotel implements ActionListener{
 
     private JPanel HotelInform(){
         JPanel panel = new JPanel();
-        GridBagConstraints[] gbc = new GridBagConstraints[6];
+        GridBagConstraints[] gbc = new GridBagConstraints[5];
         panel.setLayout(new GridBagLayout());
 
-        for(int i=0;i<6;i++){
+        for(int i=0;i<5;i++){
             gbc[i] = new GridBagConstraints();
             gbc[i].gridx = 0;
             gbc[i].gridy = i;
@@ -65,38 +76,43 @@ public class Hotel implements ActionListener{
 
         JLabel image = new JLabel(new ImageIcon(img));
 
-        String name = " Atlantis the Palm, Dubai";
-        JLabel Hname = new JLabel(name);
+        String HotelID = "1234567890";
+        String name, address, code, no;
+        try {
+            String HotelSql = "select * from Hotel where HOTELID = '" + HotelID + "'";
+            PreparedStatement Hotelstmt = dbTestHotel.prepareStatement(HotelSql);
+            ResultSet Hotelrs = Hotelstmt.executeQuery();
 
-        String address = "Address : Jumeirah Palm";
-        JLabel Haddress = new JLabel(address);
+            while (Hotelrs.next()) {
+                name = Hotelrs.getString("DNAME");
+                address = Hotelrs.getString("ADDRESS");
+                code = Hotelrs.getString("PostCode");
+                no = Hotelrs.getString("PhoneNo");
 
-        String tel = "Tel No. ";
-        String no = "000-0000-0000";
-        String telNum = tel + no;
-        JLabel telNo = new JLabel(telNum);
+                JLabel Hname = new JLabel(name);
+                Hname.setFont(new Font("맑은 고딕", Font.BOLD, 30));
+                Hname.setForeground(Color.decode("#ffb437"));
+                JLabel Haddress = new JLabel(address);
+                String tel = "Tel No. ";
+                String telNum = tel + no;
+                JLabel telNo = new JLabel(telNum);
+                String post = "PostCode : ";
+                String postcode = post + code;
+                JLabel pCode = new JLabel(postcode);
 
-        String fax = "FAX: ";
-        String fno = "000-000-0000";
-        String FaxNum = fax + fno;
-        JLabel faxNo = new JLabel(FaxNum);
-
-        gbc[5].gridx = 1;
-        gbc[5].gridwidth = 1;
-        editButton.addActionListener(this);
-
-        panel.add(image, gbc[0]);
-        panel.add(Hname, gbc[1]);
-        panel.add(Haddress, gbc[2]);
-        panel.add(telNo, gbc[3]);
-        panel.add(faxNo, gbc[4]);
-        panel.add(editButton, gbc[5]);
-
+                panel.add(image, gbc[0]);
+                panel.add(Hname, gbc[1]);
+                panel.add(Haddress, gbc[2]);
+                panel.add(telNo, gbc[3]);
+                panel.add(pCode, gbc[4]);
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
         return panel;
-
     }
 
-    private void initshowStaffli() throws SQLException {
+    private void initShowStaff() throws SQLException {
         Object header[] = {"Staff ID", "Name", "Address", "Phone No", "Email", "Salary", "Position"};
         Object contents[][] = {};
         defaultTableModel= new DefaultTableModel(contents, header);
@@ -160,11 +176,10 @@ public class Hotel implements ActionListener{
         //staff list
 
         try {
-            initshowStaffli();
-        } catch(SQLException e){
+            initShowStaff();
+        } catch(SQLException e) {
             e.printStackTrace();
         }
-//        staffInform.isCellEditable(false);
         JScrollPane scrollPane = new JScrollPane(staffInform);
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -188,114 +203,249 @@ public class Hotel implements ActionListener{
         return panel;
     }
 
+    private void initShowHFac() throws SQLException{
+        Object col_name[] = {"Facility ID", "Name", "Price"};
+        Object rows[][] = {};
+
+        defaultmodel = new DefaultTableModel(rows, col_name);
+        facInformation = new JTable(defaultmodel){
+            public boolean isCellEditable(int rowIndex, int colIndex){return false;}
+        };
+
+        String HFacQuery = "select * from HotelFacility";
+        PreparedStatement HFacstmt = dbTestHotel.prepareStatement(HFacQuery);
+        ResultSet HFacrs = HFacstmt.executeQuery();
+
+        while(HFacrs.next()){
+            String HFacID = HFacrs.getString("HotelFacID");
+            String HFacName = HFacrs.getString("HotelFacName");
+            Integer HFacPrice = HFacrs.getInt("HotelFacPrice");
+
+            Object data[] = {HFacID, HFacName, HFacPrice};
+            defaultmodel.addRow(data);
+        }
+
+        HFacrs.close();
+        HFacstmt.close();
+    }
+
     private JPanel HotelFacInform(){
         JPanel panel = new JPanel();
-        GridBagConstraints[] gbc = new GridBagConstraints[6];
+        GridBagConstraints[] gbc = new GridBagConstraints[8];
         panel.setLayout(new GridBagLayout());
 
-        for(int i=0;i<6;i++){
+        for(int i=0;i<8;i++){
             gbc[i] = new GridBagConstraints();
         }
 
         JLabel facManage = new JLabel("1. 부대시설 관리");
+        facManage.setAlignmentX(JLabel.LEFT);
         gbc[0].insets = new Insets(10, 20, 10, 0);
         gbc[0].gridx = 0;
         gbc[0].gridy = 0;
-        gbc[0].weightx = 0.0;
+        gbc[0].weightx = 1.0;
         gbc[0].weighty = 0.0;
         panel.add(facManage, gbc[0]);
 
-        JComboBox<String> HfacMng = new JComboBox<>();
-        HfacMng.addItem("주차장");
-        HfacMng.addItem("수영장");
-        HfacMng.addItem("식당");
-        HfacMng.addItem("헬스장");
-        HfacMng.addItem("스키장");
-        gbc[1].insets = new Insets(10, 10, 10, 20);
-        gbc[1].gridx = 1;
-        gbc[1].gridy = 0;
-        gbc[0].weightx = 0.0;
-        gbc[0].weighty = 0.0;
-        panel.add(HfacMng, gbc[1]);
+        // Hotel Facility Insert Button
+        gbc[6].gridx = 2;
+        gbc[6].gridy = 0;
+        gbc[6].weightx = 0.0;
+        gbc[6].weighty = 0.0;
+        gbc[6].insets = new Insets(10, 20, 5, 20);
+        panel.add(insertButton, gbc[6]);
+        insertButton.addActionListener(this);
 
-        JTextArea facInformation = new JTextArea();
+        // Hotel Facility change Button
+        gbc[7].gridx = 3;
+        gbc[7].gridy = 0;
+        gbc[7].weightx = 0.0;
+        gbc[7].weighty = 0.0;
+        gbc[7].insets = new Insets(10, 0, 5, 20);
+        panel.add(changeButton, gbc[7]);
+        changeButton.addActionListener(this);
+
+        try{
+            initShowHFac();
+        } catch(SQLException se){
+            se.printStackTrace();
+        }
         JScrollPane facInfoScroll = new JScrollPane(facInformation);
         facInfoScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         facInfoScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         gbc[2].insets = new Insets(10, 20, 5, 20);
         gbc[2].gridx = 0;
         gbc[2].gridy = 1;
-        gbc[2].gridwidth=3;
+        gbc[2].gridwidth = 4;
         gbc[2].weightx = 1.0;
         gbc[2].weighty = 0.7;
         gbc[2].fill = GridBagConstraints.BOTH;
         panel.add(facInfoScroll, gbc[2]);
 
         JLabel roomInfo = new JLabel("2. 객실정보");
-        gbc[3].insets = new Insets(10, 10, 10, 0);
+//        gbc[3].insets = new Insets(10, 10, 10, 0);
         gbc[3].gridx = 0;
         gbc[3].gridy = 2;
-        gbc[3].weightx = 0.0;
-        gbc[3].weighty = 0.0;
+        gbc[3].weightx = 1.0;
         panel.add(roomInfo, gbc[3]);
 
-        JPanel infoLabel = new JPanel();
-        GridBagConstraints[] gbcinfo = new GridBagConstraints[11];
-        infoLabel.setLayout(new GridBagLayout());
-        for(int i=0;i<11;i++){
-            gbcinfo[i] = new GridBagConstraints();
-            gbcinfo[i].gridx = 0;
-            gbcinfo[i].gridy = i;
+
+        JTextArea roomInfoText = new JTextArea();
+        roomInfoText.setEditable(false);
+        String info = "◈ 객실 총 갯수 : 90개\n";
+        info+= "   -방종류\n";
+
+        try{
+            String roomSql = "select count(*) as cnt from Room where RoomType = 'standard'";
+            PreparedStatement roomstmt = dbTestHotel.prepareStatement(roomSql);
+            ResultSet roomRs = roomstmt.executeQuery();
+
+            roomRs.next();
+            Integer numbr = roomRs.getInt("cnt");
+            String roomInfoString2_std = "STANDARD : " + numbr.toString();
+
+            info += "     " + roomInfoString2_std + "\n";
+
+            roomSql = "select count(*) as cnt from Room where RoomType = 'deluxe'";
+            roomstmt = dbTestHotel.prepareStatement(roomSql);
+            roomRs = roomstmt.executeQuery();
+
+            roomRs.next();
+            numbr = roomRs.getInt("cnt");
+            String roomInfoString2_dlx = "DELUXE : " + numbr.toString();
+
+            info += "     " + roomInfoString2_dlx + "\n";
+
+            roomSql = "select count(*) as cnt from Room where RoomType = 'superior'";
+            roomstmt = dbTestHotel.prepareStatement(roomSql);
+            roomRs = roomstmt.executeQuery();
+
+            roomRs.next();
+            numbr = roomRs.getInt("cnt");
+            String roomInfoString2_sp = "SUPERIOR : " + numbr.toString();
+
+            info += "     " + roomInfoString2_sp + "\n";
+
+            roomSql = "select count(*) as cnt from Room where RoomType = 'suite'";
+            roomstmt = dbTestHotel.prepareStatement(roomSql);
+            roomRs = roomstmt.executeQuery();
+
+            roomRs.next();
+            numbr = roomRs.getInt("cnt");
+            String roomInfoString2_st = "SUITE : " + numbr.toString();
+
+            info += "     " + roomInfoString2_st + "\n";
+
+            info += "   -침대수\n";
+
+            roomSql = "select count(*) as cnt from Room where Description = 'DOUBLE'";
+            roomstmt = dbTestHotel.prepareStatement(roomSql);
+            roomRs = roomstmt.executeQuery();
+
+            roomRs.next();
+            numbr = roomRs.getInt("cnt");
+            String roomInfoString3_db = "DOUBLE : " + numbr.toString();
+
+            info += "     " + roomInfoString3_db + "\n";
+
+            roomSql = "select count(*) as cnt from Room where Description = 'TWIN'";
+            roomstmt = dbTestHotel.prepareStatement(roomSql);
+            roomRs = roomstmt.executeQuery();
+
+            roomRs.next();
+            numbr = roomRs.getInt("cnt");
+            String roomInfoString3_tw = "TWIN : " + numbr.toString();
+
+            info += "     " + roomInfoString3_tw + "\n";
+
+            roomSql = "select count(*) as cnt from Room where Description = 'TRIPLE'";
+            roomstmt = dbTestHotel.prepareStatement(roomSql);
+            roomRs = roomstmt.executeQuery();
+
+            roomRs.next();
+            numbr = roomRs.getInt("cnt");
+            String roomInfoString3_tp = "TRIPLE : " + numbr.toString();
+
+            info += "     " + roomInfoString3_tp + "\n";
+
+            roomInfoText.setText(info);
+
+        } catch(SQLException se){
+            se.printStackTrace();
         }
-        JLabel roomInfoString1 = new JLabel("◈ 객실 총 갯수 : 100개");
-        roomInfoString1.setHorizontalTextPosition(SwingConstants.LEFT);
-        JLabel roomInfoString2 = new JLabel("-방 종류");
-        roomInfoString2.setHorizontalTextPosition(SwingConstants.LEFT);
-//        gbcinfo[1].gridx = 1;
 
-        JLabel roomInfoString2_std = new JLabel("STANDARD ROOM : 40");
-        JLabel roomInfoString2_dlx = new JLabel("DELUXE ROOM : 30");
-        JLabel roomInfoString2_st = new JLabel("SUITE ROOM : 30");
-//        for(int i=2;i<5;i++){
-//            gbcinfo[i].gridx = 2;
-//        }
-
-        JLabel roomInfoString3 = new JLabel("-침대 수");
-//        gbcinfo[5].gridx = 1;
-
-        JLabel roomInfoString3_db = new JLabel("DOUBLE ROOM : 50", SwingConstants.LEFT);
-        JLabel roomInfoString3_tw = new JLabel("TWIN ROOM : 30", SwingConstants.LEFT);
-        JLabel roomInfoString3_tp = new JLabel("TRIPLE ROOM : 10", SwingConstants.LEFT);
-        JLabel roomInfoString3_fm = new JLabel("FAMILY ROOM : 7", SwingConstants.LEFT);
-        JLabel roomInfoString3_cn = new JLabel("Connecting ROOM : 3", SwingConstants.LEFT);
-//        for(int i=6;i<11;i++){
-//            gbcinfo[i].gridx = 2;
-//        }
-        infoLabel.add(roomInfoString1, gbcinfo[0]);
-        infoLabel.add(roomInfoString2, gbcinfo[1]);
-        infoLabel.add(roomInfoString2_std, gbcinfo[2]);
-        infoLabel.add(roomInfoString2_dlx, gbcinfo[3]);
-        infoLabel.add(roomInfoString2_st, gbcinfo[4]);
-        infoLabel.add(roomInfoString3, gbcinfo[5]);
-        infoLabel.add(roomInfoString3_db, gbcinfo[6]);
-        infoLabel.add(roomInfoString3_tw, gbcinfo[7]);
-        infoLabel.add(roomInfoString3_tp, gbcinfo[8]);
-        infoLabel.add(roomInfoString3_fm, gbcinfo[9]);
-        infoLabel.add(roomInfoString3_cn, gbcinfo[10]);
-
-        gbc[4].insets = new Insets(0, 10, 10, 0);
+        gbc[4].insets = new Insets(10, 20, 10, 20);
         gbc[4].gridx = 0;
         gbc[4].gridy = 3;
+        gbc[4].gridwidth = 4;
         gbc[4].weightx = 1.0;
         gbc[4].weighty = 0.3;
-        panel.add(infoLabel, gbc[4]);
+        gbc[4].fill = GridBagConstraints.BOTH;
+        panel.add(roomInfoText, gbc[4]);
         return panel;
     }
 
+    private void facWindow(){
+        FacNameInput.setText(null);
+        priceInput.setText(null);
+        insrtFrame.setSize(300, 130);
+        JPanel insrtPanel = new JPanel();
+
+        insrtFrame.setLocationRelativeTo(null);
+        insrtPanel.setLayout(null);
+
+        FacName.setBounds(10, 10, 100, 30);
+        FacNameInput.setBounds(90, 10, 100, 30);
+
+        price.setBounds(10, 50, 100, 30);
+        priceInput.setBounds(90, 50, 100, 30);
+
+        acceptButton.setBounds(200, 30, 70, 30);
+        acceptButton.addActionListener(this);
+
+        insrtPanel.add(FacName);
+        insrtPanel.add(FacNameInput);
+        insrtPanel.add(price);
+        insrtPanel.add(priceInput);
+        insrtPanel.add(acceptButton);
+
+        insrtFrame.add(insrtPanel);
+        insrtFrame.setVisible(true);
+    }
+
+    private void facReviseWindow(){
+        FacNameInput.setText(null);
+        priceInput.setText(null);
+
+        rvsFrame.setSize(300, 130);
+        rvsFrame.setLocationRelativeTo(null);
+
+        JPanel rvsPanel = new JPanel();
+        rvsPanel.setLayout(null);
+
+        FacName.setBounds(10, 10, 100, 30);
+        FacNameInput.setBounds(90, 10, 100, 30);
+
+        price.setBounds(10, 50, 100, 30);
+        priceInput.setBounds(90, 50, 100, 30);
+
+        reviseButton.setBounds(200, 30, 70, 30);
+        reviseButton.addActionListener(this);
+
+        rvsPanel.add(FacName);
+        rvsPanel.add(FacNameInput);
+        rvsPanel.add(price);
+        rvsPanel.add(priceInput);
+        rvsPanel.add(reviseButton);
+
+        rvsFrame.add(rvsPanel);
+        rvsFrame.setVisible(true);
+    }
+
     public void actionPerformed(ActionEvent e){
+        //STAFF
         if(e.getSource() == hireButton){
             new getStaffInform(dbTestHotel);
-
         }
         int row = staffInform.getSelectedRow();
         if(row!=-1){
@@ -314,8 +464,96 @@ public class Hotel implements ActionListener{
                 }
             }
         }
-        if(e.getSource() == editButton){
-            // can edit hotel's information
+
+        //Hotel Facility
+        if(e.getSource() == insertButton){
+            facWindow();
+        }
+        if(e.getSource() == acceptButton){
+            try{
+                String sqlquery = "select count(*) as cnt from HotelFacility";
+                PreparedStatement sqlstmt = dbTestHotel.prepareStatement(sqlquery);
+                ResultSet sqlrs = sqlstmt.executeQuery();
+                sqlrs.next();
+                Integer cnt = sqlrs.getInt("cnt")+1;
+
+                String cnts = cnt.toString();
+                String id = "";
+                for(int i=0;i<9-cnts.length();i++){
+                    id+="0";
+                }
+                id += cnts;
+                sqlrs.close();
+                sqlstmt.close();
+
+                String newSql = "insert into HotelFacility values('"+id+ "', '"+FacNameInput.getText()+"', "+priceInput.getText()+")";
+                PreparedStatement newstmt = dbTestHotel.prepareStatement(newSql);
+                ResultSet newrs = newstmt.executeQuery();
+
+                newrs = newstmt.executeQuery("(select * from Staff) minus (select * from Staff where rownum < (select count(*) from Staff))");
+                while(newrs.next()){
+                    Object data[] = {id, FacNameInput.getText(), priceInput.getText()};
+                    defaultmodel.addRow(data);
+                }
+                defaultmodel.fireTableDataChanged();
+
+                newrs.close();
+                newstmt.close();
+
+                insrtFrame.dispose();
+            } catch(SQLException se){
+                se.printStackTrace();
+            }
+        }
+
+        int facrow = facInformation.getSelectedRow();
+        if(facrow != -1){
+            if(e.getSource() == changeButton){
+                facReviseWindow();
+                Object FacId = defaultmodel.getValueAt(facrow, 0);
+                String facQuery;
+                PreparedStatement facstmt;
+                ResultSet facrs;
+                try{
+                    facQuery = "select * from HotelFacility where HotelFacID = '" + FacId +"'";
+                    facstmt = dbTestHotel.prepareStatement(facQuery);
+                    facrs = facstmt.executeQuery();
+
+                    facrs.next();
+                    String facNamer = facrs.getString("HotelFacName");
+                    Integer facPrice = facrs.getInt("HotelFacPrice");
+
+                    FacNameInput.setText(facNamer);
+                    priceInput.setText(facPrice.toString());
+                } catch(SQLException se){
+                    se.printStackTrace();
+                }
+            }
+
+            if (e.getSource() == reviseButton) {
+                Object FacId = defaultmodel.getValueAt(facrow, 0);
+                String facQuery;
+                PreparedStatement facstmt;
+                ResultSet facrs;
+                try {
+                    if (e.getSource() == reviseButton) {
+                        String newFacName = FacNameInput.getText();
+                        String newPrice = priceInput.getText();
+                        facQuery = "update HotelFacility set HotelFacName = '" + newFacName + "', HotelFacPrice = " + newPrice + " where HotelFacID = '" + FacId + "'";
+                        facstmt = dbTestHotel.prepareStatement(facQuery);
+                        facrs = facstmt.executeQuery();
+
+                        defaultmodel.setValueAt(newFacName, facrow, 1);
+                        defaultmodel.setValueAt(newPrice, facrow, 2);
+                        defaultmodel.fireTableDataChanged();
+                        facrs.close();
+                        facstmt.close();
+                        rvsFrame.dispose();
+                    }
+                } catch (SQLException se) {
+                    se.printStackTrace();
+                }
+            }
         }
     }
 }
