@@ -6,8 +6,10 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,6 +24,7 @@ public class Hotel implements ActionListener{
     private JButton changeButton = new JButton("Revise");
     public static JTable staffInform;
     private Image img = null;
+//    private ImageIcon img;
     private Connection dbTestHotel;
     public static DefaultTableModel defaultTableModel;
     private DefaultTableModel defaultmodel;
@@ -45,12 +48,16 @@ public class Hotel implements ActionListener{
         frame.setLocationRelativeTo(null);
 //        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        try{
-            File sourceimage = new File("C:\\Users\\kimjiwoo\\OneDrive\\문서\\PROGRAMMING\\2학년\\2_데이터베이스\\DBPBL\\src\\HotelManage\\the-palm-962785_1920_1.png");
-            img = ImageIO.read(sourceimage);
-        } catch (IOException e){
-            System.out.println("이미지파일이 없습니다.");
-        }
+//        try{
+//            URL url = new URL("https://cdn.pixabay.com/photo/2015/09/28/21/32/the-palm-962785_1280.jpg");
+////            File sourceimage = new File("C:\\Users\\kimjiwoo\\OneDrive\\문서\\PROGRAMMING\\2학년\\2_데이터베이스\\DBPBL\\src\\HotelManage\\the-palm-962785_1920_1.png");
+//            img = ImageIO.read(url);
+//
+////            img = ImageIO.read(sourceimage);
+//        }
+//        catch (IOException e){
+//            System.out.println("이미지파일이 없습니다.");
+//        }
 
         JTabbedPane HotelTab = new JTabbedPane();
 
@@ -75,8 +82,7 @@ public class Hotel implements ActionListener{
             gbc[i].gridwidth = 2;
         }
 
-        JLabel image = new JLabel(new ImageIcon(img));
-
+//        JLabel image = new JLabel(new ImageIcon(img));
         String HotelID = "1234567890";
         String name, address, code, no;
         try {
@@ -101,7 +107,7 @@ public class Hotel implements ActionListener{
                 String postcode = post + code;
                 JLabel pCode = new JLabel(postcode);
 
-                panel.add(image, gbc[0]);
+//                panel.add(image, gbc[0]);
                 panel.add(Hname, gbc[1]);
                 panel.add(Haddress, gbc[2]);
                 panel.add(telNo, gbc[3]);
