@@ -10,6 +10,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -33,7 +35,7 @@ public class Room_Reserve_Info implements ActionListener {
     private JButton RmSearchButton = new JButton("검색");
 
 
-    JTextField RRPF_BookingID_Box = new JTextField();
+//    JTextField RRPF_BookingID_Box = new JTextField();
     JTextField RRPF_CustomerID_Box = new JTextField();
     JTextField RRPF_RoomID_Box = new JTextField();
     JTextField RRPF_BookingDate_Box = new JTextField();
@@ -41,7 +43,9 @@ public class Room_Reserve_Info implements ActionListener {
     JTextField RRPF_CheckOutDate_Box = new JTextField();
     JTextField RRPF_Nights_Box = new JTextField();
     JTextField RRPF_Comments_Box = new JTextField();
-    JTextField RRPF_BookType_Box = new JTextField();
+    String[] BookAgent= {"Hotels.com", "HotelsCombine", "Trivago", "Booking.com", "agoda", "NaverHotel", "MyRealTrip"};
+    JComboBox<String> RRPF_BookType_Box = new JComboBox<>(BookAgent);
+//    JTextField RRPF_BookType_Box = new JTextField();
     JTextField RRPF_BookTotalCost_Box = new JTextField();
     JTextField RRPF_BookingStatus_Box = new JTextField();
     JTextField RRPF_TotalAdults_Box = new JTextField();
@@ -55,7 +59,6 @@ public class Room_Reserve_Info implements ActionListener {
     String[] RMSCH_type={"standard", "superior", "deluxe", "suite"};
     JComboBox RMSCH_RoomTypeBox= new JComboBox(RMSCH_type);
     JScrollPane RMSCH_scroll = new JScrollPane();
-
     JTextField RNSCH_RoomNumbBox = new JTextField();
     JTextField RNSCH_RoomTypeBox = new JTextField();
     JTextField RNSCH_RoomMaxPersonBox = new JTextField();
@@ -293,13 +296,17 @@ public class Room_Reserve_Info implements ActionListener {
 
 
     public void ReservationRegister_PopUp() {
+
         ReservationRegister_PopUp_frame.setTitle("예약 등록");
         ReservationRegister_PopUp_frame.setBounds(1185, 50, 350, 700);
         ReservationRegister_PopUp_frame.setLayout(null);
 
-        JLabel BookingID = new JLabel("Booking ID");
+        JLabel BookingString = new JLabel("예약등록");
         JLabel CustomerID = new JLabel("Customer ID");
         JLabel RoomID = new JLabel("RoomID");
+        JLabel dateformat1 = new JLabel("YYMMDD");
+        JLabel dateformat2 = new JLabel("YYMMDD");
+        JLabel dateformat3 = new JLabel("YYMMDD");
         JLabel BookingDate = new JLabel("Booking Date");
         JLabel CheckInDate = new JLabel("Check in Date");
         JLabel CheckOutDate = new JLabel("Check Out Date");
@@ -312,7 +319,8 @@ public class Room_Reserve_Info implements ActionListener {
         JLabel TotalChildrens = new JLabel("Total Childrens");
         JLabel TotalRooms = new JLabel("Total Rooms");
 
-        BookingID.setBounds(45, 30, 100, 40);
+        BookingString.setBounds(100, 10, 200, 50);
+        BookingString.setFont(new Font("맑은 고딕", Font.BOLD, 30));
         CustomerID.setBounds(45, 70, 100, 40);
         RoomID.setBounds(45, 110, 100, 40);
         BookingDate.setBounds(45, 150, 100, 40);
@@ -327,27 +335,29 @@ public class Room_Reserve_Info implements ActionListener {
         TotalChildrens.setBounds(45, 510, 100, 40);
         TotalRooms.setBounds(45, 550, 100, 40);
 
-        RRPF_BookingID_Box.setBounds(140, 40, 70, 20);
-        RRPF_CustomerID_Box.setBounds(140, 80, 70, 20);
-        RRPF_RoomID_Box.setBounds(140, 120, 70, 20);
-        RRPF_BookingDate_Box.setBounds(140, 160, 70, 20);
-        RRPF_CheckInDate_Box.setBounds(140, 200, 70, 20);
-        RRPF_CheckOutDate_Box.setBounds(140, 240, 70, 20);
-        RRPF_Nights_Box.setBounds(140, 280, 70, 20);
-        RRPF_Comments_Box.setBounds(140, 320, 70, 20);
-        RRPF_BookType_Box.setBounds(140, 360, 70, 20);
-        RRPF_BookTotalCost_Box.setBounds(140, 400, 70, 20);
-        RRPF_BookingStatus_Box.setBounds(140, 440, 70, 20);
-        RRPF_TotalAdults_Box.setBounds(140, 480, 70, 20);
-        RRPF_TotalChildrens_Box.setBounds(140, 520, 70, 20);
-        RRPF_TotalRooms_Box.setBounds(140, 560, 70, 20);
+        RRPF_CustomerID_Box.setBounds(140, 70, 120, 35);
+        RRPF_RoomID_Box.setBounds(140, 110, 120, 35);
+        RRPF_BookingDate_Box.setBounds(140, 150, 120, 35);
+        dateformat1.setBounds(265, 150, 120, 35);
+        RRPF_CheckInDate_Box.setBounds(140, 190, 120, 35);
+        dateformat2.setBounds(265, 190, 120, 35);
+        RRPF_CheckOutDate_Box.setBounds(140, 230, 120, 35);
+        dateformat3.setBounds(265, 230, 120, 35);
+        RRPF_Nights_Box.setBounds(140, 270, 120, 35);
+        RRPF_Comments_Box.setBounds(140, 310, 120, 35);
+        RRPF_BookType_Box.setBounds(140, 350, 120, 35);
+        RRPF_BookTotalCost_Box.setBounds(140, 390, 120, 35);
+        RRPF_BookingStatus_Box.setBounds(140, 430, 120, 35);
+        RRPF_TotalAdults_Box.setBounds(140, 470, 120, 35);
+        RRPF_TotalChildrens_Box.setBounds(140, 510, 120, 35);
+        RRPF_TotalRooms_Box.setBounds(140, 550, 120, 35);
 
 
 
         PopUpRegistrationButton.setBounds(230, 600, 60, 30);
         PopUpRegistrationButton.addActionListener(this);
 
-        ReservationRegister_PopUp_frame.add(BookingID);
+        ReservationRegister_PopUp_frame.add(BookingString);
         ReservationRegister_PopUp_frame.add(CustomerID);
         ReservationRegister_PopUp_frame.add(RoomID);
         ReservationRegister_PopUp_frame.add(BookingDate);
@@ -361,9 +371,10 @@ public class Room_Reserve_Info implements ActionListener {
         ReservationRegister_PopUp_frame.add(TotalAdults);
         ReservationRegister_PopUp_frame.add(TotalChildrens);
         ReservationRegister_PopUp_frame.add(TotalRooms);
+        ReservationRegister_PopUp_frame.add(dateformat1);
+        ReservationRegister_PopUp_frame.add(dateformat2);
+        ReservationRegister_PopUp_frame.add(dateformat3);
 
-
-        ReservationRegister_PopUp_frame.add(RRPF_BookingID_Box);
         ReservationRegister_PopUp_frame.add(RRPF_CustomerID_Box);
         ReservationRegister_PopUp_frame.add(RRPF_RoomID_Box);
         ReservationRegister_PopUp_frame.add(RRPF_BookingDate_Box);
@@ -380,6 +391,8 @@ public class Room_Reserve_Info implements ActionListener {
 
 
         ReservationRegister_PopUp_frame.add(PopUpRegistrationButton);
+
+
 
         ReservationRegister_PopUp_frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -422,8 +435,10 @@ public class Room_Reserve_Info implements ActionListener {
 
 
     public void InsertReservation() throws SQLException {
-
-        String BookingID = (String) RRPF_BookingID_Box.getText();
+        LocalDateTime time1 = LocalDateTime.now();
+        final String pattern = "yyMMddkkmmss";
+        String BookingID = time1.format(DateTimeFormatter.ofPattern(pattern));
+        System.out.println(BookingID);
         String CustomerID = (String) RRPF_CustomerID_Box.getText();
         String RoomID = (String) RRPF_RoomID_Box.getText();
         String BookingDate = (String) RRPF_BookingDate_Box.getText();
@@ -431,7 +446,7 @@ public class Room_Reserve_Info implements ActionListener {
         String CheckOutDate = (String) RRPF_CheckOutDate_Box.getText();
         String Nights = (String) RRPF_Nights_Box.getText();
         String Comments = (String) RRPF_Comments_Box.getText();
-        String BookType = (String) RRPF_BookType_Box.getText();
+        String BookType = (String) RRPF_BookType_Box.getSelectedItem();
         String BookTotalCost = (String) RRPF_BookTotalCost_Box.getText();
         String BookingStatus = (String) RRPF_BookingStatus_Box.getText();
         String TotalAdults = (String) RRPF_TotalAdults_Box.getText();
@@ -602,7 +617,7 @@ public class Room_Reserve_Info implements ActionListener {
         tPane.addTab("예약관리", ReservationPanel);
         tPane.addTab("검색", SearchPanel);
 
-        frame.setTitle("회원관리 페이지");
+        frame.setTitle("예약관리 페이지");
         frame.setSize(1200,750);
         frame.add(tPane);
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
