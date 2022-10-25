@@ -1,2 +1,2 @@
 # DB_7
-Fucking Database PBL
+Database PBL Project
